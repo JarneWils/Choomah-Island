@@ -26,20 +26,30 @@ body {
   top: 0px;
   left: 0px;
 }
+.logo {
+  position: fixed;
+  top: 12vh;
+  left: 50vw;
+  transform: translateX(-50%);
+}
+.logo img {
+  width: 40vw;
+}
 .start-button {
   background-color: white;
   border: none;
   position: fixed;
-  top: 50vh;
+  top: 58vh;
   left: 50vw;
   transform: translateX(-50%);
-  padding: 10px 25px;
+  padding: 20px 35px;
   border-radius: 5px;
   cursor: pointer;
   font-weight: 600;
+  font-size: 1em;
 }
 .start-button:hover {
-  background-color: rgb(237, 198, 26);
+  background-color: rgb(193, 36, 36);
 }
 
 .aimPoint {
