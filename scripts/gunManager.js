@@ -149,10 +149,12 @@ export class GunManager {
         this.scene.remove(bullet);
         list.splice(i, 1);
 
-        // Stuur event via socket om speler te laten weten dat hij geraakt is
-        if (hitPlayerId !== bullet.userData.shooterId) {
-          this.socket.emit('playerHit', { hitPlayerId, shooterId: bullet.userData.shooterId });
-          console.log(`Player ${hitPlayerId} is geraakt door ${bullet.userData.shooterId}`);
+        if (this.playerId === bullet.userData.shooterId && hitPlayerId !== this.playerId) {
+          if (!bullet.userData.hitReported) {
+            bullet.userData.hitReported = true;
+            this.socket.emit('playerHit', { hitPlayerId, shooterId: bullet.userData.shooterId });
+            console.log(`Player ${hitPlayerId} is geraakt door ${bullet.userData.shooterId}`);
+          }
         }
       }
     }

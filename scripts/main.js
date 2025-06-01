@@ -113,15 +113,31 @@ socket.on('playerDisconnected', id => {
   Player.removeRemotePlayer(id, scene);
 });
 
+let lastHitTime = 0;
+
 socket.on('playerHit', ({ hitPlayerId, shooterId }) => {
+  const now = Date.now();
+
+  if (now - lastHitTime < 200) {
+    // Minder dan 1 seconde geleden, negeer dit event
+    return;
+  }
+  lastHitTime = now;
+
+  if (hitPlayerId !== localPlayerId) {
+    // Andere spelers: verwissel dat model naar rood
+    Player.changePlayerToHitModel(hitPlayerId, scene);
+  }
+
   if (hitPlayerId === localPlayerId && shooterId !== localPlayerId) {
     console.log(`Je bent geraakt door speler ${shooterId}`);
 
-    // Verwijder 1 hartje (als er nog hartjes zijn)
     if (lives > 0) {
+      lives--;
       const randomIndex = Math.floor(Math.random() * hitAudios.length);
       const audioClone = hitAudios[randomIndex].cloneNode();
       audioClone.play();
+
       const hartjes = hpContainer.querySelectorAll('.hartje');
       if (hartjes.length > 0) {
         const lastHartje = hartjes[hartjes.length - 1];
@@ -134,7 +150,6 @@ socket.on('playerHit', ({ hitPlayerId, shooterId }) => {
       hitScreen.style.display = 'none';
     }, 500);
 
-    // wat moet gebeuren als de player sterft
     if (lives <= 0) {
       dieAudio.play();
       backgroundAudio.pause();

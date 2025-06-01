@@ -63,7 +63,7 @@ io.on('connection', socket => {
   socket.on('playerHit', ({ hitPlayerId, shooterId }) => {
     console.log(`Player ${hitPlayerId} werd geraakt door ${shooterId}`);
     io.to(hitPlayerId).emit('playerHit', { hitPlayerId, shooterId });
-    socket.broadcast.emit('playerHit', { hitPlayerId, shooterId });
+    socket.broadcast.emit('playerWasHitVisual', { hitPlayerId });
   });
 
   // Verwijder speler bij disconnect
