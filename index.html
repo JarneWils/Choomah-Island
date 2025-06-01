@@ -1,0 +1,50 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <link rel="icon" type="image/svg+xml" href="/vite.svg" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="stylesheet" href="/style.css" />
+
+    <title>Redshifter</title>
+  </head>
+  <body>
+    <audio id="background-audio" src="public/audio/wake-up.mp3" loop></audio>
+    <audio id="walk-audio" src="public/audio/walk.mp3" loop></audio>
+    <audio id="gun-audio" src="public/audio/gun.mp3"></audio>
+    <audio id="hit1-audio" src="public/audio/hit1.wav"></audio>
+    <audio id="hit2-audio" src="public/audio/hit2.wav"></audio>
+    <audio id="hit3-audio" src="public/audio/hit3.wav"></audio>
+    <audio id="hit4-audio" src="public/audio/hit4.wav"></audio>
+    <audio id="die-audio" src="public/audio/die.wav"></audio>
+
+    <div class="start-container">
+      <button class="start-button">S T A R T</button>
+    </div>
+
+    <div class="hit"></div>
+    <div class="die"></div>
+
+    <div class="hp-container"></div>
+
+    <div>
+      <div class="aimPoint"></div>
+      <div class="aimPoint2"></div>
+    </div>
+
+    <div class="gun-holder"><img src="public/images/holding-gun-yellow.png" /></div>
+
+    <div class="materials">
+      <div class="item">
+        <p class="key">1</p>
+        <div class="gun"><img src="public/images/gun-icon.png.png" /></div>
+      </div>
+
+      <div class="item">
+        <p class="key">2</p>
+        <div class="block"><img src="public/images/block-icon.png" /></div>
+      </div>
+    </div>
+    <script type="module" src="/scripts/main.js"></script>
+  </body>
+</html>

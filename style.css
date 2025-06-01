@@ -1,0 +1,177 @@
+:root {
+  margin: 0 auto;
+  overflow: hidden;
+}
+body {
+  margin: 0 auto;
+  overflow: hidden;
+}
+
+#info {
+  position: absolute;
+  bottom: 0;
+  right: 0;
+  font-family: sans-serif;
+  font-size: 24px;
+  color: #fff;
+  margin: 8px;
+}
+
+.start-container {
+  display: none;
+  width: 100vw;
+  height: 100vh;
+  background-color: rgba(0, 0, 0, 0.4);
+  position: fixed;
+  top: 0px;
+  left: 0px;
+}
+.start-button {
+  background-color: white;
+  border: none;
+  position: fixed;
+  top: 50vh;
+  left: 50vw;
+  transform: translateX(-50%);
+  padding: 10px 25px;
+  border-radius: 5px;
+  cursor: pointer;
+  font-weight: 600;
+}
+.start-button:hover {
+  background-color: rgb(237, 198, 26);
+}
+
+.aimPoint {
+  width: 1px;
+  height: 15px;
+  background-color: rgb(200, 200, 200);
+  position: fixed;
+  top: calc(50% - 7.5px);
+  left: 50%;
+  z-index: 1000;
+}
+.aimPoint2 {
+  width: 15px;
+  height: 1px;
+  background-color: rgb(200, 200, 200);
+  position: fixed;
+  top: 50%;
+  left: calc(50% - 6.5px);
+  z-index: 1000;
+}
+
+.materials {
+  position: fixed;
+  right: 4vw;
+  bottom: 8vh;
+  display: flex;
+  gap: 5px;
+  justify-content: center;
+  justify-items: center;
+  align-items: center;
+  align-content: center;
+  border-radius: 10px;
+}
+.item {
+  width: 70px;
+  height: 70px;
+  background-color: rgb(33, 33, 33);
+  border-radius: 10px;
+  border: 4px solid rgb(255, 255, 255, 0.4);
+}
+.item:hover {
+  border: 4px solid rgb(212, 216, 0);
+}
+.item.active {
+  border: 4px solid rgb(212, 216, 0);
+}
+.key {
+  margin-top: 2px;
+  margin-right: 5px;
+  text-align: end;
+  color: rgb(180, 180, 180);
+  font-family: Arial, Helvetica, sans-serif;
+  font-weight: 600;
+  font-size: 12px;
+}
+.hak img {
+  width: 50px;
+  height: auto;
+  margin-top: -15px;
+  margin-left: 8px;
+  opacity: 0.8;
+}
+.gun img {
+  width: 60px;
+  height: auto;
+  margin-top: -24px;
+  margin-left: 4px;
+  opacity: 0.8;
+}
+.block img {
+  width: 55px;
+  height: auto;
+  margin-top: -20px;
+  margin-left: 8px;
+  opacity: 0.8;
+}
+
+.gun-holder {
+  display: none;
+  position: fixed;
+  left: 52vw;
+  bottom: 0px;
+  width: 370px;
+  animation: hold 1s infinite ease-in-out;
+  filter: brightness(0.8) contrast(0.8);
+}
+.gun-holder img {
+  height: 50vh;
+}
+
+@keyframes hold {
+  0% {
+    bottom: -5px;
+  }
+  50% {
+    bottom: -10px;
+  }
+  100% {
+    bottom: -5px;
+  }
+}
+
+.hit {
+  width: 100vw;
+  height: 100vh;
+  background-color: rgba(255, 0, 0);
+  opacity: 0.15;
+  position: fixed;
+  top: 0px;
+  left: 0px;
+  display: none;
+}
+.die {
+  width: 100vw;
+  height: 100vh;
+  background-color: rgba(255, 0, 0);
+  opacity: 0.9;
+  position: fixed;
+  top: 0px;
+  left: 0px;
+  display: none;
+}
+
+.hp-container {
+  width: 280px;
+  position: fixed;
+  top: 5vh;
+  left: 50vw;
+  transform: translateX(-50%);
+  display: flex;
+  gap: 20px;
+}
+.hartje img {
+  width: 40px;
+}
