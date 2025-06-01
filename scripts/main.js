@@ -263,7 +263,7 @@ for (let i = 0; i < 5; i++) {
   const div = document.createElement('div');
   div.classList.add('hartje'); // class toevoegen
   const img = document.createElement('img');
-  img.src = 'public/images/hartje.png'; // pad naar de afbeelding
+  img.src = 'images/hartje.png'; // pad naar de afbeelding
   div.appendChild(img);
   hpContainer.appendChild(div);
 }
