@@ -119,12 +119,9 @@ socket.on('playerHit', ({ hitPlayerId, shooterId }) => {
 
     // Verwijder 1 hartje (als er nog hartjes zijn)
     if (lives > 0) {
-      lives--;
-
       const randomIndex = Math.floor(Math.random() * hitAudios.length);
       const audioClone = hitAudios[randomIndex].cloneNode();
       audioClone.play();
-
       const hartjes = hpContainer.querySelectorAll('.hartje');
       if (hartjes.length > 0) {
         const lastHartje = hartjes[hartjes.length - 1];

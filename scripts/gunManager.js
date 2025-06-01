@@ -98,22 +98,29 @@ export class GunManager {
 
     const allPlayers = {
       ...this.players,
-      [this.playerId]: this.Player.localPlayer, // <-- fix hier
+      [this.playerId]: this.Player.localPlayer,
     };
 
     for (const id in allPlayers) {
       const player = allPlayers[id];
 
-      if (!player || !player.mesh || !player.mesh.position) {
-        continue;
-      }
+      if (!player) continue;
 
       if (id === bullet.userData.shooterId) continue;
 
-      const playerPos = player.mesh.position;
-      const dist = pos.distanceTo(playerPos);
+      const playerPos = player.getWorldPosition ? player.getWorldPosition() : player.mesh.position;
 
-      if (dist < 0.5) {
+      const halfW = player.playerWidth / 2 || 0.25; // fallback
+      const playerHeight = player.playerHeight || 1.5;
+
+      if (
+        pos.x > playerPos.x - halfW - 0.2 &&
+        pos.x < playerPos.x + halfW + 0.2 &&
+        pos.y > playerPos.y - 1.6 &&
+        pos.y < playerPos.y + 1 &&
+        pos.z > playerPos.z - halfW - 0.2 &&
+        pos.z < playerPos.z + halfW + 0.2
+      ) {
         console.log(
           `[COLLISION DETECTED] bullet at ${pos.toArray()} hit player ${id} at ${playerPos.toArray()}`
         );

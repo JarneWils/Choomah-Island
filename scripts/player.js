@@ -63,6 +63,10 @@ export class Player {
     return new THREE.Mesh(geometry, material);
   }
 
+  getWorldPosition() {
+    return this.controls.object.position.clone();
+  }
+
   enable() {
     this.controls.lock();
     this.enabled = true;
@@ -184,6 +188,7 @@ export class Player {
 
     position.x = Math.max(0.5, Math.min(position.x, this.worldSize - 0.5));
     position.z = Math.max(0.5, Math.min(position.z, this.worldSize - 0.5));
+    position.y = Math.max(3.5, position.y);
 
     if (this.playerMesh) {
       this.playerMesh.position.set(
