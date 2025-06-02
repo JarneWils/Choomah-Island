@@ -1,6 +1,7 @@
 import * as THREE from 'three';
 
 const gunAudio = document.querySelector('#gun-audio');
+const scoreAudio = document.querySelector('#score-audio');
 const hitNumber = document.querySelector('.hit-pop-up');
 
 export class GunManager {
@@ -155,6 +156,8 @@ export class GunManager {
           this.socket.emit('playerHit', { hitPlayerId, shooterId: bullet.userData.shooterId });
           console.log(`Player ${hitPlayerId} is geraakt door ${bullet.userData.shooterId}`);
           hitNumber.style.display = 'block';
+          const audioClone = gunAudio.cloneNode();
+          audioClone.play();
           setTimeout(() => {
             hitNumber.style.display = 'none';
           }, 400);
