@@ -29,6 +29,7 @@ export class Player {
     this.playerHeight = 1.5;
     this.playerWidth = 0.5;
     this.controls.object.position.copy(spawnPosition);
+
     this.jumpSpeed = 12;
     this.canJump = false;
     this.gravity = 40;
@@ -241,36 +242,6 @@ export class Player {
       scene.remove(remote.mesh);
       delete Player.remotePlayers[id];
     }
-  }
-
-  static changePlayerToHitModel(id, scene) {
-    const remote = Player.remotePlayers[id];
-    if (!remote) return;
-
-    // Verwijder het oude model uit de scene
-    scene.remove(remote.mesh);
-
-    // Laad het rood model
-    const loader = new GLTFLoader();
-    loader.load(
-      'models/choomah-hit.glb', // jouw rood model
-      gltf => {
-        const model = gltf.scene;
-        model.scale.set(0.5, 0.5, 0.5);
-        scene.add(model);
-        Player.remotePlayers[id].mesh = model;
-      },
-      undefined,
-      error => {
-        console.error('Error loading hit model:', error);
-        // fallback naar rode box
-        const geometry = new THREE.BoxGeometry(0.5, 1.5, 0.5);
-        const material = new THREE.MeshStandardMaterial({ color: 0xff0000 }); // rood
-        const mesh = new THREE.Mesh(geometry, material);
-        scene.add(mesh);
-        Player.remotePlayers[id].mesh = mesh;
-      }
-    );
   }
 
   static updateRemotePlayer(id, data) {

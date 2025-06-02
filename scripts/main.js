@@ -113,31 +113,30 @@ socket.on('playerDisconnected', id => {
   Player.removeRemotePlayer(id, scene);
 });
 
-let lastHitTime = 0;
+let lastHitTime = 0; // Zorg dat dit ergens globaal staat
 
 socket.on('playerHit', ({ hitPlayerId, shooterId }) => {
   const now = Date.now();
 
   if (now - lastHitTime < 200) {
-    // Minder dan 1 seconde geleden, negeer dit event
+    // Te snel achter elkaar? Ignore event
     return;
   }
   lastHitTime = now;
 
-  if (hitPlayerId !== localPlayerId) {
-    // Andere spelers: verwissel dat model naar rood
-    Player.changePlayerToHitModel(hitPlayerId, scene);
-  }
-
+  // Jij bent geraakt door een ander
   if (hitPlayerId === localPlayerId && shooterId !== localPlayerId) {
     console.log(`Je bent geraakt door speler ${shooterId}`);
 
     if (lives > 0) {
       lives--;
+
+      // Speel hit geluid
       const randomIndex = Math.floor(Math.random() * hitAudios.length);
       const audioClone = hitAudios[randomIndex].cloneNode();
       audioClone.play();
 
+      // Verwijder een hartje uit de UI
       const hartjes = hpContainer.querySelectorAll('.hartje');
       if (hartjes.length > 0) {
         const lastHartje = hartjes[hartjes.length - 1];
@@ -145,14 +144,18 @@ socket.on('playerHit', ({ hitPlayerId, shooterId }) => {
       }
     }
 
+    // Toon hit scherm (rood flash)
     hitScreen.style.display = 'block';
     setTimeout(() => {
       hitScreen.style.display = 'none';
     }, 500);
 
+    // Check of de speler dood is
     if (lives <= 0) {
+      Player.removeRemotePlayer(hitPlayerId);
       dieAudio.play();
       backgroundAudio.pause();
+      gunManager.setActive(false);
       dieScreen.style.display = 'block';
       setTimeout(() => {
         window.location.reload(true);
@@ -320,4 +323,4 @@ window.addEventListener('resize', () => {
 
 setupLights();
 // createUI(world);
-animate();
+// animate();

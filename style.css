@@ -145,7 +145,7 @@ body {
     bottom: -5px;
   }
   50% {
-    bottom: -10px;
+    bottom: -15px;
   }
   100% {
     bottom: -5px;
@@ -162,6 +162,39 @@ body {
   left: 0px;
   display: none;
 }
+.hit-pop-up {
+  width: 20vw;
+  height: 10vh;
+  position: fixed;
+  top: 40vh;
+  left: 55vw;
+  color: rgb(193, 36, 36);
+  font-family: Impact, Haettenschweiler, 'Arial Narrow Bold', sans-serif;
+  font-size: 5vh;
+  font-weight: 600;
+  display: none;
+  animation: circleMove 4s ease-in-out infinite;
+  transform-origin: center;
+}
+
+@keyframes circleMove {
+  0% {
+    transform: translate(0, 0);
+  }
+  25% {
+    transform: translate(15px, 15px);
+  }
+  50% {
+    transform: translate(0, 25px);
+  }
+  75% {
+    transform: translate(-15px, 15px);
+  }
+  100% {
+    transform: translate(0, 0);
+  }
+}
+
 .die {
   width: 100vw;
   height: 100vh;

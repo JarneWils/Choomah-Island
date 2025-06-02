@@ -1,6 +1,7 @@
 import * as THREE from 'three';
 
 const gunAudio = document.querySelector('#gun-audio');
+const hitNumber = document.querySelector('.hit-pop-up');
 
 export class GunManager {
   constructor(camera, scene, controlPanel, socket, playerId, world, Player) {
@@ -114,12 +115,12 @@ export class GunManager {
       const playerHeight = player.playerHeight || 1.5;
 
       if (
-        pos.x > playerPos.x - halfW - 0.2 &&
-        pos.x < playerPos.x + halfW + 0.2 &&
-        pos.y > playerPos.y - 1.6 &&
-        pos.y < playerPos.y + 1 &&
-        pos.z > playerPos.z - halfW - 0.2 &&
-        pos.z < playerPos.z + halfW + 0.2
+        pos.x > playerPos.x - halfW - 0.3 &&
+        pos.x < playerPos.x + halfW + 0.3 &&
+        pos.y > playerPos.y - 1.7 &&
+        pos.y < playerPos.y + 1.1 &&
+        pos.z > playerPos.z - halfW - 0.3 &&
+        pos.z < playerPos.z + halfW + 0.3
       ) {
         console.log(
           `[COLLISION DETECTED] bullet at ${pos.toArray()} hit player ${id} at ${playerPos.toArray()}`
@@ -150,11 +151,14 @@ export class GunManager {
         list.splice(i, 1);
 
         if (this.playerId === bullet.userData.shooterId && hitPlayerId !== this.playerId) {
-          if (!bullet.userData.hitReported) {
-            bullet.userData.hitReported = true;
-            this.socket.emit('playerHit', { hitPlayerId, shooterId: bullet.userData.shooterId });
-            console.log(`Player ${hitPlayerId} is geraakt door ${bullet.userData.shooterId}`);
-          }
+          bullet.userData.hitReported = true;
+          this.socket.emit('playerHit', { hitPlayerId, shooterId: bullet.userData.shooterId });
+          console.log(`Player ${hitPlayerId} is geraakt door ${bullet.userData.shooterId}`);
+          hitNumber.style.display = 'block';
+          setTimeout(() => {
+            hitNumber.style.display = 'none';
+          }, 400);
+          console.log('ik heb ene geraakt.');
         }
       }
     }
