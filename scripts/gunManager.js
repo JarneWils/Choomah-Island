@@ -49,7 +49,7 @@ export class GunManager {
     const bullet = new THREE.Mesh(geometry, material);
 
     bullet.position.copy(origin);
-    bullet.userData.velocity = direction.clone().multiplyScalar(60);
+    bullet.userData.velocity = direction.clone().multiplyScalar(80);
     bullet.userData.shooterId = shooterId; // <-- belangrijk
 
     this.scene.add(bullet);

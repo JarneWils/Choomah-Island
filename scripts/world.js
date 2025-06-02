@@ -15,15 +15,15 @@ export class World extends THREE.Group {
   data = [];
 
   params = {
-    seed: 8,
+    seed: 10,
     terrain: {
       scale: 30,
-      magnitude: 0.4,
-      offset: 0.1,
+      magnitude: 0.6,
+      offset: 0.2,
     },
   };
 
-  constructor(size = { width: 80, height: 40 }) {
+  constructor(size = { width: 80, height: 25 }) {
     super();
     this.size = size;
   }

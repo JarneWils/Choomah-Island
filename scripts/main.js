@@ -185,11 +185,11 @@ document.body.appendChild(renderer.domElement);
 
 // camera
 const playerCamera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight);
-playerCamera.position.set(20, 10, 20);
+playerCamera.position.set(20, 40, 20);
 
 // Orbit camera
 const orbitCamera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight);
-orbitCamera.position.set(20, 10, 20);
+orbitCamera.position.set(40, 20, 40);
 
 // scene
 const scene = new THREE.Scene();
@@ -217,7 +217,7 @@ startButton.addEventListener('click', () => {
   backgroundAudio.play();
 
   usingFirstPerson = true;
-  controls.enabled = false; // orbit controls uit
+  controls.enabled = true; // orbit controls uit
 
   if (player) {
     player.enable(); // activeer movement
@@ -245,7 +245,7 @@ function setupLights() {
   scene.add(sun);
 
   const shadowHelper = new THREE.CameraHelper(sun.shadow.camera);
-  scene.add(shadowHelper);
+  // scene.add(shadowHelper);
 }
 
 // Item selector

@@ -50,7 +50,7 @@ export const blocks = {
     name: 'healingBlock',
     color: 0x999999,
     scale: { x: 30, y: 30, z: 30 },
-    scarcity: 0.8,
+    scarcity: 0.6,
     material: new THREE.MeshLambertMaterial({ map: textures.healingBlock }),
   },
   amoBlock: {
@@ -58,7 +58,7 @@ export const blocks = {
     name: 'amoBlock',
     color: 0x666699,
     scale: { x: 20, y: 20, z: 20 },
-    scarcity: 0.5,
+    scarcity: 0.4,
     material: new THREE.MeshLambertMaterial({ map: textures.amoBlock }),
   },
 };
