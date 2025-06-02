@@ -15,7 +15,7 @@ export class World extends THREE.Group {
   data = [];
 
   params = {
-    seed: 10,
+    seed: 20,
     terrain: {
       scale: 30,
       magnitude: 0.6,
