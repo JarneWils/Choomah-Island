@@ -33,7 +33,7 @@ let lives = 5;
 let isStart = true;
 
 if (isStart) {
-  startScreen.style.display = 'none';
+  startScreen.style.display = 'block';
 } else if (!isStart) {
   startScreen.style.display = 'none';
 }
@@ -212,7 +212,7 @@ orbitCamera.position.set(25, 20, 25);
 
 // scene
 const scene = new THREE.Scene();
-let selectedMap = 'map4'; // standaardwaarde
+let selectedMap = 'map1';
 let world = new World(selectedMap, socket);
 world.generate();
 scene.add(world);
