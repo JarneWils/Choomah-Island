@@ -212,7 +212,7 @@ orbitCamera.position.set(25, 20, 25);
 
 // scene
 const scene = new THREE.Scene();
-let selectedMap = 'map1';
+let selectedMap = 'map2';
 let world = new World(selectedMap, socket);
 world.generate();
 scene.add(world);
