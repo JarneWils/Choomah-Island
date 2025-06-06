@@ -7,6 +7,7 @@ import { Player } from './player';
 import { io } from 'socket.io-client';
 import { ControlPanel } from './controlPanel';
 import { GunManager } from './gunManager.js';
+import { setupEnvironment, updateDayNightCycle } from './environment.js';
 
 const gunHand = document.querySelector('.gun-holder');
 const startScreen = document.querySelector('.start-container');
@@ -168,9 +169,6 @@ socket.on('playerHit', ({ hitPlayerId, shooterId }) => {
 //-------------------------------------------------Main Script-------------------------------------
 //-------------------------------------------------------------------------------------------------
 
-const skyColor = 'rgb(15, 25, 30)';
-const fogColor = 'rgb(15, 25, 30)';
-
 const stats = new Stats();
 document.body.append(stats.dom);
 
@@ -178,7 +176,6 @@ document.body.append(stats.dom);
 const renderer = new THREE.WebGLRenderer({ antialias: true });
 renderer.setPixelRatio(window.devicePixelRatio);
 renderer.setSize(window.innerWidth, window.innerHeight);
-renderer.setClearColor(skyColor);
 renderer.shadowMap.enabled = true;
 renderer.shadowMap.type = THREE.PCFSoftShadowMap;
 document.body.appendChild(renderer.domElement);
@@ -197,11 +194,21 @@ const world = new World();
 world.generate();
 scene.add(world);
 
+// environment
+const lights = setupEnvironment(scene, world);
+const cycleParams = {
+  dayDuration: 20,
+  dawnDuration: 1,
+  nightDuration: 20,
+  fadeDuration: 15,
+};
+let clock = new THREE.Clock();
+
 // Fog
-let isFog = true;
-if (isFog === true) {
-  scene.fog = new THREE.Fog(fogColor, 10, 40);
-}
+// let isFog = true;
+// if (isFog === true) {
+//   scene.fog = new THREE.Fog(fogColor, 5, 50);
+// }
 
 // controls
 const controls = new OrbitControls(orbitCamera, renderer.domElement);
@@ -227,31 +234,31 @@ startButton.addEventListener('click', () => {
 });
 
 // lights
-function setupLights() {
-  const ambient = new THREE.AmbientLight(0xffffff, 0.6);
-  scene.add(ambient);
+// function setupLights() {
+//   const ambient = new THREE.AmbientLight(lightsColor, 0.5);
+//   scene.add(ambient);
 
-  const fakeSun = new THREE.DirectionalLight(0xffffff, 0.5);
-  fakeSun.position.set(0, 60, -(world.size.width * 2));
-  fakeSun.castShadow = false;
-  scene.add(fakeSun);
+//   const fakeSun = new THREE.DirectionalLight(lightsColor, 2);
+//   fakeSun.position.set(0, 60, -(world.size.width * 2));
+//   fakeSun.castShadow = false;
+//   scene.add(fakeSun);
 
-  const sun = new THREE.DirectionalLight(0xffffff, 3.5);
-  sun.position.set(world.size.width - 20, 60, world.size.width);
-  sun.castShadow = true;
-  sun.shadow.camera.top = 30;
-  sun.shadow.camera.bottom = -60;
-  sun.shadow.camera.left = -50;
-  sun.shadow.camera.right = 50;
-  sun.shadow.camera.near = 0.1;
-  sun.shadow.camera.far = 130;
-  sun.shadow.bias = -0.001;
-  sun.shadow.mapSize = new THREE.Vector2(512, 512);
-  scene.add(sun);
+//   const sun = new THREE.DirectionalLight(lightsColor, 2.5);
+//   sun.position.set(world.size.width - 20, 60, world.size.width);
+//   sun.castShadow = true;
+//   sun.shadow.camera.top = 30;
+//   sun.shadow.camera.bottom = -60;
+//   sun.shadow.camera.left = -50;
+//   sun.shadow.camera.right = 50;
+//   sun.shadow.camera.near = 0.1;
+//   sun.shadow.camera.far = 130;
+//   sun.shadow.bias = -0.001;
+//   sun.shadow.mapSize = new THREE.Vector2(512, 512);
+//   scene.add(sun);
 
-  const shadowHelper = new THREE.CameraHelper(sun.shadow.camera);
-  // scene.add(shadowHelper);
-}
+//   const shadowHelper = new THREE.CameraHelper(sun.shadow.camera);
+//   // scene.add(shadowHelper);
+// }
 
 // Item selector
 const items = document.querySelectorAll('.item');
@@ -292,7 +299,6 @@ function onMouseDown(event) {
 document.addEventListener('mousedown', onMouseDown);
 
 //Loop
-let clock = new THREE.Clock();
 let currentCamera = orbitCamera; // begin met orbit
 const cameraHelper = new THREE.CameraHelper(playerCamera);
 // scene.add(cameraHelper);
@@ -300,6 +306,9 @@ const cameraHelper = new THREE.CameraHelper(playerCamera);
 function animate() {
   requestAnimationFrame(animate);
   const delta = clock.getDelta();
+
+  // update dag-nacht cyclus en omgeving
+  updateDayNightCycle(delta, scene, lights, world, cycleParams);
 
   stats.update();
 
@@ -341,6 +350,6 @@ window.addEventListener('resize', () => {
   renderer.setSize(window.innerWidth, window.innerHeight);
 });
 
-setupLights();
+// setupLights();
 // createUI(world);
 // animate();

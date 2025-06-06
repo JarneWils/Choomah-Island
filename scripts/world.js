@@ -14,22 +14,68 @@ export class World extends THREE.Group {
    */
   data = [];
 
-  params = {
-    seed: 5,
-    terrain: {
-      scale: 30,
-      magnitude: 0.6,
-      offset: 0.2,
+  maps = {
+    map1: {
+      params: {
+        seed: 850,
+        terrain: {
+          scale: 28,
+          magnitude: 0.8,
+          offset: 0.4,
+          height: 15,
+        },
+      },
+      size: { width: 80, height: 15 },
+    },
+    map2: {
+      params: {
+        seed: 5,
+        terrain: {
+          scale: 30,
+          magnitude: 0.6,
+          offset: 0.2,
+          height: 25,
+        },
+      },
+      size: { width: 80, height: 25 },
+    },
+    map3: {
+      params: {
+        seed: 525,
+        terrain: {
+          scale: 15,
+          magnitude: 4,
+          offset: 0.2,
+          height: 15,
+        },
+      },
+      size: { width: 80, height: 15 },
     },
   };
 
-  constructor(size = { width: 80, height: 25 }) {
+  constructor(mapName = 'map2') {
     super();
-    this.size = size;
+    this.setMap(mapName);
   }
 
   /**
-   * generate alles
+   * Kies en laad een map
+   * @param {string} mapName
+   */
+  setMap(mapName) {
+    const map = this.maps[mapName];
+    if (!map) {
+      console.warn(`Map "${mapName}" bestaat niet, fallback naar "map3"`);
+      this.params = this.maps.map3.params;
+      this.size = this.maps.map3.size;
+    } else {
+      this.params = map.params;
+      this.size = map.size;
+    }
+  }
+
+  /**
+   * Genereer de volledige wereld
    */
   generate() {
     const rng = new RNG(this.params.seed);
@@ -39,9 +85,6 @@ export class World extends THREE.Group {
     this.generateMeshes();
   }
 
-  /**
-   * initialize terrain data
-   */
   initializeTerrain() {
     this.data = [];
     for (let x = 0; x < this.size.width; x++) {
@@ -60,9 +103,6 @@ export class World extends THREE.Group {
     }
   }
 
-  /**
-   * Genereer de materialen
-   */
   generateResources(rng) {
     const simplex = new SimplexNoise(rng);
     resources.forEach(resource => {
@@ -83,23 +123,14 @@ export class World extends THREE.Group {
     });
   }
 
-  /**
-   * generate terrain data for the world
-   */
   generateTerrain(rng) {
     const simplex = new SimplexNoise(rng);
     for (let x = 0; x < this.size.width; x++) {
       for (let z = 0; z < this.size.width; z++) {
-        // bereken de hoeveelheid noise voor x en z
         const value = simplex.noise(x / this.params.terrain.scale, z / this.params.terrain.scale);
-
-        // scale de noise op basis van offset en magnitude
         const scaledNoise = this.params.terrain.offset + this.params.terrain.magnitude * value;
 
-        // bereken de hoogte van de wereld voor x en z
         let height = Math.floor(this.size.height * scaledNoise);
-
-        // hou de hoogte tussen 0 en de maximum hoogte
         height = Math.max(1, Math.min(height, this.size.height - 1));
 
         for (let y = 0; y < this.size.height; y++) {
@@ -115,9 +146,6 @@ export class World extends THREE.Group {
     }
   }
 
-  /**
-   * generate 3D meshes
-   */
   generateMeshes() {
     this.clear();
 
@@ -136,102 +164,58 @@ export class World extends THREE.Group {
       });
 
     const matrix = new THREE.Matrix4();
+
     for (let x = 0; x < this.size.width; x++) {
-      for (let y = 0; y < this.size.height; y++)
+      for (let y = 0; y < this.size.height; y++) {
         for (let z = 0; z < this.size.width; z++) {
           const blockId = this.getBlock(x, y, z).id;
-
           if (blockId === blocks.empty.id) continue;
 
-          const mesh = meshes[blockId];
-          const instanceId = mesh.count;
-
           if (!this.isBlockObscured(x, y, z)) {
+            const mesh = meshes[blockId];
+            const instanceId = mesh.count;
             matrix.setPosition(x + 0.5, y + 0.5, z + 0.5);
             mesh.setMatrixAt(instanceId, matrix);
             this.setBlockInstanceId(x, y, z, instanceId);
             mesh.count++;
           }
         }
+      }
     }
 
     this.add(...Object.values(meshes));
   }
 
-  //--------------------------------------------------------------------------------
-  //------------------------------------ Helper Functions --------------------------
-  //--------------------------------------------------------------------------------
-
-  /**
-   * verkrijg de data van elke blok per positie
-   * @param {number} x
-   * @param {number} y
-   * @param {number} z
-   * @returns {{id: number, instanceId: number}} instanceId
-   */
   getBlock(x, y, z) {
-    if (this.inBounds(x, y, z) === true) {
+    if (this.inBounds(x, y, z)) {
       return this.data[x][y][z];
-    } else {
-      return null;
     }
+    return null;
   }
 
-  /**
-   * geef elke blok een id die het typen bepaalt
-   * @param {number} x
-   * @param {number} y
-   * @param {number} z
-   * @param {number} id
-   */
   setBlockId(x, y, z, id) {
-    if (this.inBounds(x, y, z) === true) {
+    if (this.inBounds(x, y, z)) {
       this.data[x][y][z].id = id;
     }
   }
 
-  /**
-   * geef de blok een instance id afhankelijk van zijn positie
-   * @param {number} x
-   * @param {number} y
-   * @param {number} z
-   * @param {number} instanceId
-   */
   setBlockInstanceId(x, y, z, instanceId) {
-    if (this.inBounds(x, y, z) === true) {
+    if (this.inBounds(x, y, z)) {
       this.data[x][y][z].instanceId = instanceId;
     }
   }
 
-  /**
-   * kijk of de mesh in de wereld staat
-   * @param {number} x
-   * @param {number} y
-   * @param {number} z
-   * @returns {boolean}
-   */
   inBounds(x, y, z) {
-    if (
+    return (
       x >= 0 &&
       x < this.size.width &&
       y >= 0 &&
       y < this.size.height &&
       z >= 0 &&
       z < this.size.width
-    ) {
-      return true;
-    } else {
-      return false;
-    }
+    );
   }
 
-  /**
-   * Geeft true als de blok niet volledig omsingeld is door andere blokken
-   * @param {number} x
-   * @param {number} y
-   * @param {number} z
-   * @returns {boolean}
-   */
   isBlockObscured(x, y, z) {
     const up = this.getBlock(x, y + 1, z)?.id ?? blocks.empty.id;
     const down = this.getBlock(x, y - 1, z)?.id ?? blocks.empty.id;
@@ -239,37 +223,27 @@ export class World extends THREE.Group {
     const right = this.getBlock(x - 1, y, z)?.id ?? blocks.empty.id;
     const forward = this.getBlock(x, y, z + 1)?.id ?? blocks.empty.id;
     const back = this.getBlock(x, y, z - 1)?.id ?? blocks.empty.id;
-    if (
-      up === blocks.empty.id ||
-      down === blocks.empty.id ||
-      left === blocks.empty.id ||
-      right === blocks.empty.id ||
-      forward === blocks.empty.id ||
-      back === blocks.empty.id
-    ) {
-      return false;
-    } else {
-      return true;
-    }
+
+    return (
+      up !== blocks.empty.id &&
+      down !== blocks.empty.id &&
+      left !== blocks.empty.id &&
+      right !== blocks.empty.id &&
+      forward !== blocks.empty.id &&
+      back !== blocks.empty.id
+    );
   }
 
-  /**
-   * Verwijder een blok op de gegeven positie en update de mesh
-   * @param {number} x
-   * @param {number} y
-   * @param {number} z
-   */
   removeBlock(x, y, z) {
     if (!this.inBounds(x, y, z)) return;
 
     const block = this.getBlock(x, y, z);
     if (block.id === blocks.empty.id) return;
 
-    // Verwijder het blok
     this.setBlockId(x, y, z, blocks.empty.id);
     this.setBlockInstanceId(x, y, z, null);
 
-    // Herteken de wereld (eventueel optimaliseer je dit later met partial updates)
+    // Herteken de wereld (kan later geoptimaliseerd worden)
     this.generateMeshes();
   }
 }
