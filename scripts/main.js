@@ -7,6 +7,7 @@ import { Player } from './player';
 import { io } from 'socket.io-client';
 import { ControlPanel } from './controlPanel';
 import { GunManager } from './gunManager.js';
+import { BlockManager } from './blockManager.js';
 
 const gunHand = document.querySelector('.gun-holder');
 const startScreen = document.querySelector('.start-container');
@@ -46,6 +47,7 @@ const socket = io(import.meta.env.PROD ? undefined : 'http://localhost:3000');
 let localPlayerId = null;
 let lastGunActiveState = false;
 let gunManager = null;
+const blockManager = new BlockManager();
 
 // players
 let player = null;
@@ -71,7 +73,8 @@ socket.on('connect', () => {
     world,
     localPlayerId,
     socket,
-    spawnPosition // voeg deze toe
+    spawnPosition,
+    blockManager
   );
 
   scene.add(player.controls.object);
@@ -284,7 +287,7 @@ function animate() {
   stats.update();
 
   if (usingFirstPerson) {
-    player.update(delta);
+    player.update(delta, world);
 
     const shouldBeActive = controlPanel.gun;
     if (gunManager && shouldBeActive !== lastGunActiveState) {

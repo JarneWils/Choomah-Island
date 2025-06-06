@@ -3,16 +3,21 @@ import { ControlPanel } from './controlPanel.js';
 import * as THREE from 'three';
 import { GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader.js';
 
+const CENTER_SCREEN = new THREE.Vector2();
+
 export class Player {
+  raycaster = new THREE.Raycaster(new THREE.Vector3(), new THREE.Vector3(), 1, 4);
+  selectedCoords = null;
   constructor(
     camera,
     renderer,
-    worldSize = 100,
+    worldSize,
     scene,
     world,
-    playerId = null,
+    playerId,
     socket,
-    spawnPosition
+    spawnPosition,
+    blockManager
   ) {
     this.camera = camera;
     this.controls = new PointerLockControls(camera, renderer.domElement);
@@ -20,6 +25,8 @@ export class Player {
 
     this.world = world;
     this.worldSize = worldSize;
+
+    this.blockManager = blockManager;
 
     this.enabled = false;
     this.velocity = new THREE.Vector3();
@@ -53,7 +60,29 @@ export class Player {
 
     this.playerMesh = this.createPlayerMesh();
     if (scene) scene.add(this.playerMesh);
+
+    const selectionGeometry = new THREE.BoxGeometry(1.05, 1.05, 1.05);
+    const selectionMaterial = new THREE.MeshBasicMaterial({
+      transparent: true,
+      opacity: 0.3,
+      color: 0xffaaaa,
+    });
+    this.selectionHelper = new THREE.Mesh(selectionGeometry, selectionMaterial);
+    scene.add(this.selectionHelper);
+
+    renderer.domElement.addEventListener('contextmenu', event => {
+      event.preventDefault(); // standaard rechtsklik blokkeren
+      if (!this.enabled) return;
+
+      if (this.controlsPanel.block && this.selectedCoords) {
+        this.blockManager.removeBlockAt(this.selectedCoords);
+      }
+    });
   }
+
+  //----------------------------------------------------------------------------------------------
+  //--------------------------------------PLAYER CODE---------------------------------------------
+  //----------------------------------------------------------------------------------------------
 
   createPlayerMesh() {
     const geometry = new THREE.BoxGeometry(this.playerWidth, this.playerHeight, this.playerWidth);
@@ -103,7 +132,32 @@ export class Player {
     return angle;
   }
 
-  update(delta) {
+  updateRaycaster(world) {
+    this.raycaster.setFromCamera(CENTER_SCREEN, this.camera);
+    const intersections = this.raycaster.intersectObject(world, true);
+    if (intersections.length > 0) {
+      const intersection = intersections[0];
+
+      // De intersection block verkrijgen
+      const blockMatrix = new THREE.Matrix4();
+      intersection.object.getMatrixAt(intersection.instanceId, blockMatrix);
+
+      // De positie van die block ophalen en opslaan in selectedCoords
+      const position = new THREE.Vector3();
+      position.setFromMatrixPosition(blockMatrix);
+
+      this.selectedCoords = position;
+      this.selectionHelper.visible = true;
+      this.selectionHelper.position.copy(this.selectedCoords);
+
+      console.log(this.selectedCoords);
+    } else {
+      this.selectedCoords = null;
+      this.selectionHelper.visible = false;
+    }
+  }
+
+  update(delta, world) {
     if (!this.enabled) return;
 
     this.velocity.x = 0;
@@ -203,6 +257,10 @@ export class Player {
     }
 
     this.sendPlayerData();
+
+    if (this.controlsPanel.block === true && this.controlsPanel.gun === false) {
+      this.updateRaycaster(world);
+    }
   }
 
   getControls() {

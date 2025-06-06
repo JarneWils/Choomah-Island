@@ -126,10 +126,7 @@ export class ControlPanel {
 
     if (isMoving) {
       if (walkAudio.paused) {
-        walkAudio.play().catch(e => {
-          // Bijv. als de gebruiker nog niet op iets geklikt heeft
-          console.warn('Audio play werd geblokkeerd:', e);
-        });
+        walkAudio.play();
       }
     } else {
       walkAudio.pause();

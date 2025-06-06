@@ -158,9 +158,32 @@ export class World extends THREE.Group {
     this.add(...Object.values(meshes));
   }
 
+  removeBlock(x, y, z) {
+    if (!this.inBounds(x, y, z)) return;
+
+    const block = this.getBlock(x, y, z);
+    if (!block || block.id === blocks.empty.id) return;
+
+    const mesh = this.getMeshByBlockId(block.id);
+    if (!mesh || block.instanceId === null) return;
+
+    // Verplaats de block ver weg (vervangen is sneller dan echt verwijderen)
+    const dummyMatrix = new THREE.Matrix4().makeTranslation(9999, 9999, 9999);
+    mesh.setMatrixAt(block.instanceId, dummyMatrix);
+    mesh.instanceMatrix.needsUpdate = true;
+
+    // Reset de data
+    block.id = blocks.empty.id;
+    block.instanceId = null;
+  }
+
   //--------------------------------------------------------------------------------
   //------------------------------------ Helper Functions --------------------------
   //--------------------------------------------------------------------------------
+
+  getMeshByBlockId(id) {
+    return this.children.find(child => child.isInstancedMesh && child.name === blocks[id].name);
+  }
 
   /**
    * verkrijg de data van elke blok per positie
