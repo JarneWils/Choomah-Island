@@ -53,9 +53,10 @@ export class World extends THREE.Group {
     },
   };
 
-  constructor(mapName = 'map2') {
+  constructor(mapName = 'map3', socket) {
     super();
     this.setMap(mapName);
+    this.socket = socket;
   }
 
   /**
@@ -234,7 +235,7 @@ export class World extends THREE.Group {
     );
   }
 
-  removeBlock(x, y, z) {
+  applyBlockRemoval(x, y, z) {
     if (!this.inBounds(x, y, z)) return;
 
     const block = this.getBlock(x, y, z);
@@ -243,7 +244,11 @@ export class World extends THREE.Group {
     this.setBlockId(x, y, z, blocks.empty.id);
     this.setBlockInstanceId(x, y, z, null);
 
-    // Herteken de wereld (kan later geoptimaliseerd worden)
     this.generateMeshes();
+  }
+
+  removeBlock(x, y, z) {
+    this.applyBlockRemoval(x, y, z); // lokaal
+    this.socket.emit('blockRemoved', { x, y, z }); // sync naar server
   }
 }

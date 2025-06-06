@@ -65,6 +65,10 @@ io.on('connection', socket => {
     io.to(hitPlayerId).emit('playerHit', { hitPlayerId, shooterId });
   });
 
+  socket.on('blockRemoved', ({ x, y, z }) => {
+    socket.broadcast.emit('removeBlock', { x, y, z });
+  });
+
   // Verwijder speler bij disconnect
   socket.on('disconnect', () => {
     console.log(`❌ Speler weg: ${socket.id}`);

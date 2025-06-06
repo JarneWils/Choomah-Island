@@ -10,11 +10,11 @@ export const dayColors = {
 };
 
 export const dawnColors = {
-  sky: new THREE.Color('rgb(221, 152, 112)'),
+  sky: new THREE.Color('rgb(238, 167, 126)'),
   fog: new THREE.Color('rgb(150, 123, 147)'),
   ambientLight: new THREE.Color('#ffaaaa'),
   directionalLight: new THREE.Color('#ff00ff'),
-  ambientIntensity: 1.5,
+  ambientIntensity: 1,
   directionalIntensity: 2,
 };
 
@@ -23,7 +23,7 @@ export const nightColors = {
   fog: new THREE.Color('rgb(0, 20, 24)'),
   ambientLight: new THREE.Color('#bbbbff'),
   directionalLight: new THREE.Color('#bbbbff'),
-  ambientIntensity: 2,
+  ambientIntensity: 1.5,
   directionalIntensity: 1.5,
 };
 

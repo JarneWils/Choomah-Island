@@ -26,7 +26,7 @@ export class Player {
     this.controls.object.position.copy(spawnPosition);
 
     this.playerLight = new THREE.PointLight(0xffffff, 3, 5, 0);
-    this.playerLight.position.set(0, 0, 0); // Op de camera zelf
+    this.playerLight.position.set(0, 0, 0);
     this.playerLight.castShadow = true;
     this.camera.add(this.playerLight);
     scene.add(this.camera);

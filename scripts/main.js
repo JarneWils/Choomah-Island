@@ -165,6 +165,10 @@ socket.on('playerHit', ({ hitPlayerId, shooterId }) => {
   }
 });
 
+socket.on('removeBlock', ({ x, y, z }) => {
+  world.applyBlockRemoval(x, y, z); // NIET .removeBlock gebruiken
+});
+
 //-------------------------------------------------------------------------------------------------
 //-------------------------------------------------Main Script-------------------------------------
 //-------------------------------------------------------------------------------------------------
@@ -190,7 +194,8 @@ orbitCamera.position.set(40, 20, 40);
 
 // scene
 const scene = new THREE.Scene();
-const world = new World();
+const selectedMap = 'map1'; // kies je map
+const world = new World(selectedMap, socket);
 world.generate();
 scene.add(world);
 
