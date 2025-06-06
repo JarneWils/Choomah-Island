@@ -22,7 +22,6 @@ export class World extends THREE.Group {
           scale: 28,
           magnitude: 0.8,
           offset: 0.4,
-          height: 15,
         },
       },
       size: { width: 80, height: 15 },
@@ -31,13 +30,12 @@ export class World extends THREE.Group {
       params: {
         seed: 5,
         terrain: {
-          scale: 30,
-          magnitude: 0.6,
+          scale: 28,
+          magnitude: 0.8,
           offset: 0.2,
-          height: 25,
         },
       },
-      size: { width: 80, height: 25 },
+      size: { width: 80, height: 35 },
     },
     map3: {
       params: {
@@ -46,7 +44,6 @@ export class World extends THREE.Group {
           scale: 15,
           magnitude: 4,
           offset: 0.2,
-          height: 15,
         },
       },
       size: { width: 80, height: 15 },
@@ -58,7 +55,6 @@ export class World extends THREE.Group {
           scale: 50,
           magnitude: 8,
           offset: 0.2,
-          height: 10,
         },
       },
       size: { width: 80, height: 10 },

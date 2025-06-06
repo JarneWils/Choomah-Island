@@ -69,6 +69,11 @@ io.on('connection', socket => {
     socket.broadcast.emit('removeBlock', { x, y, z });
   });
 
+  socket.on('mapChanged', ({ map }) => {
+    console.log(`🗺️ Speler ${socket.id} veranderde map naar ${map}`);
+    socket.broadcast.emit('mapChanged', { map });
+  });
+
   // Verwijder speler bij disconnect
   socket.on('disconnect', () => {
     console.log(`❌ Speler weg: ${socket.id}`);

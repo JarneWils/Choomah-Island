@@ -12,6 +12,7 @@ import { setupEnvironment, updateDayNightCycle } from './environment.js';
 const gunHand = document.querySelector('.gun-holder');
 const startScreen = document.querySelector('.start-container');
 const startButton = document.querySelector('.start-button');
+const mapSelect = document.getElementById('map-select');
 const hitScreen = document.querySelector('.hit');
 const dieScreen = document.querySelector('.die');
 const hpContainer = document.querySelector('.hp-container');
@@ -32,7 +33,7 @@ let lives = 5;
 let isStart = true;
 
 if (isStart) {
-  startScreen.style.display = 'block';
+  startScreen.style.display = 'none';
 } else if (!isStart) {
   startScreen.style.display = 'none';
 }
@@ -171,6 +172,21 @@ socket.on('removeBlock', ({ x, y, z }) => {
   world.applyBlockRemoval(x, y, z); // NIET .removeBlock gebruiken
 });
 
+socket.on('mapChanged', ({ map }) => {
+  if (map !== selectedMap) {
+    console.log(`🔄 Wereld verandert naar map: ${map}`);
+    selectedMap = map;
+
+    // Verwijder oude wereld
+    scene.remove(world);
+
+    // Genereer nieuwe wereld
+    world = new World(selectedMap, socket);
+    world.generate();
+    scene.add(world);
+  }
+});
+
 //-------------------------------------------------------------------------------------------------
 //-------------------------------------------------Main Script-------------------------------------
 //-------------------------------------------------------------------------------------------------
@@ -188,18 +204,34 @@ document.body.appendChild(renderer.domElement);
 
 // camera
 const playerCamera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight);
-playerCamera.position.set(20, 40, 20);
+playerCamera.position.set(25, 20, 20);
 
 // Orbit camera
 const orbitCamera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight);
-orbitCamera.position.set(40, 20, 40);
+orbitCamera.position.set(25, 20, 25);
 
 // scene
 const scene = new THREE.Scene();
-const selectedMap = 'map1'; // kies je map
-const world = new World(selectedMap, socket);
+let selectedMap = 'map1'; // standaardwaarde
+let world = new World(selectedMap, socket);
 world.generate();
 scene.add(world);
+
+mapSelect.addEventListener('change', () => {
+  // Verwijder de oude wereld van de scene
+  scene.remove(world);
+
+  // Update de geselecteerde map
+  selectedMap = mapSelect.value;
+
+  // ✉️ Stuur de gekozen map naar de server
+  socket.emit('mapChanged', { map: selectedMap });
+
+  // Maak een nieuwe wereld aan
+  world = new World(selectedMap, socket);
+  world.generate();
+  scene.add(world);
+});
 
 // environment
 const lights = setupEnvironment(scene, world);

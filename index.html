@@ -11,7 +11,7 @@
   <body>
     <audio id="background-audio" src="public/audio/wake-up.mp3" loop></audio>
     <audio id="walk-audio" src="public/audio/walk.mp3" loop></audio>
-    <audio id="gun-audio" src="public/audio/gun.mp3"></audio>
+    <audio id="gun-audio" src="public/audio/gun.wav"></audio>
     <audio id="hit1-audio" src="public/audio/hit1.wav"></audio>
     <audio id="hit2-audio" src="public/audio/hit2.wav"></audio>
     <audio id="hit3-audio" src="public/audio/hit3.wav"></audio>
@@ -23,6 +23,12 @@
     <div class="start-container">
       <div class="logo"><img src="public/images/logo.png" /></div>
       <button class="start-button">S T A R T</button>
+      <select id="map-select" class="map-select">
+        <option value="map1">MAP 01</option>
+        <option value="map2">MAP 02</option>
+        <option value="map3">MAP 03</option>
+        <option value="map4">MAP 04</option>
+      </select>
     </div>
 
     <div class="hit"></div>

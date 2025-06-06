@@ -21,7 +21,7 @@ body {
   display: none;
   width: 100vw;
   height: 100vh;
-  background-color: rgba(0, 0, 0, 0.4);
+  background-color: rgba(0, 0, 0, 0.5);
   position: fixed;
   top: 0px;
   left: 0px;
@@ -39,7 +39,7 @@ body {
   background-color: white;
   border: none;
   position: fixed;
-  top: 58vh;
+  top: 68vh;
   left: 50vw;
   transform: translateX(-50%);
   padding: 20px 35px;
@@ -51,7 +51,20 @@ body {
 .start-button:hover {
   background-color: rgb(193, 36, 36);
 }
-
+.map-select {
+  position: fixed;
+  top: 58vh;
+  left: 50vw;
+  transform: translateX(-50%);
+  padding: 20px 30px;
+  background-color: white;
+  border-radius: 5px !important;
+  border: none;
+  font-weight: 600;
+  font-size: 1em;
+  border-radius: 8px;
+  cursor: pointer;
+}
 .aimPoint {
   width: 1px;
   height: 15px;
