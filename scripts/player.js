@@ -6,27 +6,15 @@ import { GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader.js';
 const CENTER_SCREEN = new THREE.Vector2();
 
 export class Player {
-  raycaster = new THREE.Raycaster(new THREE.Vector3(), new THREE.Vector3(), 1, 4);
+  raycaster = new THREE.Raycaster(new THREE.Vector3(), new THREE.Vector3(), 0.2, 6);
   selectedCoords = null;
-  constructor(
-    camera,
-    renderer,
-    worldSize,
-    scene,
-    world,
-    playerId,
-    socket,
-    spawnPosition,
-    blockManager
-  ) {
+  constructor(camera, renderer, worldSize, scene, world, playerId, socket, spawnPosition) {
     this.camera = camera;
     this.controls = new PointerLockControls(camera, renderer.domElement);
     this.socket = socket;
 
     this.world = world;
     this.worldSize = worldSize;
-
-    this.blockManager = blockManager;
 
     this.enabled = false;
     this.velocity = new THREE.Vector3();
@@ -69,15 +57,6 @@ export class Player {
     });
     this.selectionHelper = new THREE.Mesh(selectionGeometry, selectionMaterial);
     scene.add(this.selectionHelper);
-
-    renderer.domElement.addEventListener('contextmenu', event => {
-      event.preventDefault(); // standaard rechtsklik blokkeren
-      if (!this.enabled) return;
-
-      if (this.controlsPanel.block && this.selectedCoords) {
-        this.blockManager.removeBlockAt(this.selectedCoords);
-      }
-    });
   }
 
   //----------------------------------------------------------------------------------------------
@@ -150,7 +129,7 @@ export class Player {
       this.selectionHelper.visible = true;
       this.selectionHelper.position.copy(this.selectedCoords);
 
-      console.log(this.selectedCoords);
+      // console.log(this.selectedCoords);
     } else {
       this.selectedCoords = null;
       this.selectionHelper.visible = false;

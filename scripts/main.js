@@ -7,7 +7,6 @@ import { Player } from './player';
 import { io } from 'socket.io-client';
 import { ControlPanel } from './controlPanel';
 import { GunManager } from './gunManager.js';
-import { BlockManager } from './blockManager.js';
 
 const gunHand = document.querySelector('.gun-holder');
 const startScreen = document.querySelector('.start-container');
@@ -47,7 +46,6 @@ const socket = io(import.meta.env.PROD ? undefined : 'http://localhost:3000');
 let localPlayerId = null;
 let lastGunActiveState = false;
 let gunManager = null;
-const blockManager = new BlockManager();
 
 // players
 let player = null;
@@ -73,8 +71,7 @@ socket.on('connect', () => {
     world,
     localPlayerId,
     socket,
-    spawnPosition,
-    blockManager
+    spawnPosition
   );
 
   scene.add(player.controls.object);
@@ -231,8 +228,13 @@ startButton.addEventListener('click', () => {
 
 // lights
 function setupLights() {
-  const ambient = new THREE.AmbientLight(0xffffff, 0.8);
+  const ambient = new THREE.AmbientLight(0xffffff, 0.6);
   scene.add(ambient);
+
+  const fakeSun = new THREE.DirectionalLight(0xffffff, 0.5);
+  fakeSun.position.set(0, 60, -(world.size.width * 2));
+  fakeSun.castShadow = false;
+  scene.add(fakeSun);
 
   const sun = new THREE.DirectionalLight(0xffffff, 3.5);
   sun.position.set(world.size.width - 20, 60, world.size.width);
@@ -273,6 +275,21 @@ for (let i = 0; i < 5; i++) {
   div.appendChild(img);
   hpContainer.appendChild(div);
 }
+
+// Block functions
+function onMouseDown(event) {
+  if (event.button === 2) {
+    if (controlPanel.block === true && controlPanel.gun === false && player.selectedCoords) {
+      const x = Math.floor(player.selectedCoords.x);
+      const y = Math.floor(player.selectedCoords.y);
+      const z = Math.floor(player.selectedCoords.z);
+      if (y > 1) {
+        world.removeBlock(x, y, z);
+      }
+    }
+  }
+}
+document.addEventListener('mousedown', onMouseDown);
 
 //Loop
 let clock = new THREE.Clock();
