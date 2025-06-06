@@ -51,6 +51,18 @@ export class World extends THREE.Group {
       },
       size: { width: 80, height: 15 },
     },
+    map4: {
+      params: {
+        seed: 5,
+        terrain: {
+          scale: 50,
+          magnitude: 8,
+          offset: 0.2,
+          height: 10,
+        },
+      },
+      size: { width: 80, height: 10 },
+    },
   };
 
   constructor(mapName = 'map3', socket) {
@@ -243,7 +255,6 @@ export class World extends THREE.Group {
 
     this.setBlockId(x, y, z, blocks.empty.id);
     this.setBlockInstanceId(x, y, z, null);
-
     this.generateMeshes();
   }
 

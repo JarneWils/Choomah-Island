@@ -132,10 +132,12 @@ export class Player {
       position.setFromMatrixPosition(blockMatrix);
 
       this.selectedCoords = position;
-      this.selectionHelper.visible = true;
-      this.selectionHelper.position.copy(this.selectedCoords);
-
-      // console.log(this.selectedCoords);
+      if (this.selectedCoords.y > 2) {
+        this.selectionHelper.visible = true;
+        this.selectionHelper.position.copy(this.selectedCoords);
+      } else {
+        this.selectionHelper.visible = false;
+      }
     } else {
       this.selectedCoords = null;
       this.selectionHelper.visible = false;

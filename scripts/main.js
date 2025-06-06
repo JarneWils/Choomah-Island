@@ -25,6 +25,8 @@ const hitAudios = [
 ];
 const dieAudio = document.querySelector('#die-audio');
 
+const removeAudio = document.querySelector('#block-remove-audio');
+
 let lives = 5;
 
 let isStart = true;
@@ -297,6 +299,8 @@ function onMouseDown(event) {
       const z = Math.floor(player.selectedCoords.z);
       if (y > 1) {
         world.removeBlock(x, y, z);
+        const removeAudioClone = removeAudio.cloneNode();
+        removeAudioClone.play();
       }
     }
   }
