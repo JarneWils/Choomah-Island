@@ -34,7 +34,6 @@ export class GunManager {
 
     this.socket.on('setBlock', ({ x, y, z, id }) => {
       this.world.setBlockId(x, y, z, id);
-      this.world.generateMeshes();
     });
   }
 

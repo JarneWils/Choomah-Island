@@ -17,6 +17,7 @@ const hitScreen = document.querySelector('.hit');
 const dieScreen = document.querySelector('.die');
 const hpContainer = document.querySelector('.hp-container');
 const playerWait = document.querySelector('.player-wait');
+const amoPopUp = document.querySelector('.amo-pop-up');
 
 const backgroundAudio = document.querySelector('#background-audio');
 const hitAudios = [
@@ -26,6 +27,7 @@ const hitAudios = [
   document.querySelector('#hit4-audio'),
 ];
 const dieAudio = document.querySelector('#die-audio');
+const scoreAudio = document.querySelector('#score-audio');
 
 const removeAudio = document.querySelector('#block-remove-audio');
 
@@ -335,7 +337,17 @@ function onMouseDown(event) {
       const y = Math.floor(player.selectedCoords.y);
       const z = Math.floor(player.selectedCoords.z);
       if (y > 1) {
-        world.removeBlock(x, y, z);
+        const block = world.getBlock(x, y, z);
+        if (block && block.id === 4) {
+          world.increaseAmmo(1);
+          amoPopUp.style.display = 'block';
+          const audioClone = scoreAudio.cloneNode();
+          audioClone.play();
+          setTimeout(() => {
+            amoPopUp.style.display = 'none';
+          }, 200);
+        }
+        world.removeBlock(x, y, z); // pas NA het checken verwijderen
         const removeAudioClone = removeAudio.cloneNode();
         removeAudioClone.play();
       }
