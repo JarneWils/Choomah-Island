@@ -4,8 +4,13 @@ import { RNG } from './rng';
 import { blocks, resources } from './blocks';
 
 const geometry = new THREE.BoxGeometry(1, 1, 1);
+const amoCount = document.querySelector('.amo-count');
+const amoPopUp = document.querySelector('.amo-pop-up');
+const scoreAudio = document.querySelector('#score-audio');
 
 export class World extends THREE.Group {
+  amoCounter = 10;
+
   /**
    * @type {{
    * id: number,
@@ -243,12 +248,34 @@ export class World extends THREE.Group {
     );
   }
 
+  updateAmmoDisplay() {
+    amoCount.innerHTML = `${this.amoCounter.toString()} x`;
+  }
+
+  increaseAmmo(amount = 1) {
+    this.amoCounter += amount;
+    this.updateAmmoDisplay();
+  }
+
+  decreaseAmmo(amount = 1) {
+    this.amoCounter = Math.max(0, this.amoCounter - amount);
+    this.updateAmmoDisplay();
+  }
+
   applyBlockRemoval(x, y, z) {
     if (!this.inBounds(x, y, z)) return;
 
     const block = this.getBlock(x, y, z);
     if (block.id === blocks.empty.id) return;
-
+    if (block.id === 4) {
+      this.increaseAmmo(1);
+      amoPopUp.style.display = 'block';
+      const audioClone = scoreAudio.cloneNode();
+      audioClone.play();
+      setTimeout(() => {
+        amoPopUp.style.display = 'none';
+      }, 200);
+    }
     this.setBlockId(x, y, z, blocks.empty.id);
     this.setBlockInstanceId(x, y, z, null);
     this.generateMeshes();

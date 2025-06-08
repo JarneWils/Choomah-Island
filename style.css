@@ -16,7 +16,15 @@ body {
   color: #fff;
   margin: 8px;
 }
-
+.lobby-container {
+  display: block;
+  width: 100vw;
+  height: 100vh;
+  background-color: rgba(0, 0, 0, 0.5);
+  position: fixed;
+  top: 0px;
+  left: 0px;
+}
 .start-container {
   display: none;
   width: 100vw;
@@ -28,18 +36,18 @@ body {
 }
 .logo {
   position: fixed;
-  top: 12vh;
+  top: 14vh;
   left: 50vw;
   transform: translateX(-50%);
 }
 .logo img {
-  width: 40vw;
+  width: 70vh;
 }
 .start-button {
   background-color: white;
   border: none;
   position: fixed;
-  top: 68vh;
+  top: 58vh;
   left: 50vw;
   transform: translateX(-50%);
   padding: 20px 35px;
@@ -47,9 +55,25 @@ body {
   cursor: pointer;
   font-weight: 600;
   font-size: 1em;
+  letter-spacing: 5px;
 }
 .start-button:hover {
   background-color: rgb(193, 36, 36);
+}
+.player-wait {
+  display: none;
+  color: white;
+  border: none;
+  position: fixed;
+  top: 58vh;
+  left: 50vw;
+  transform: translateX(-50%);
+  padding: 20px 35px;
+  border-radius: 5px;
+  font-family: Arial, Helvetica, sans-serif;
+  letter-spacing: 5px;
+  font-weight: 600;
+  font-size: 1em;
 }
 .map-select {
   position: fixed;
@@ -140,7 +164,11 @@ body {
   margin-left: 8px;
   opacity: 0.8;
 }
-
+.amo-count {
+  color: white;
+  font-family: Arial, Helvetica, sans-serif;
+  font-weight: 600;
+}
 .gun-holder {
   display: none;
   position: fixed;
@@ -176,19 +204,24 @@ body {
   left: 0px;
   display: none;
 }
-.hit-pop-up {
+.hit-pop-up,
+.amo-pop-up {
   width: 20vw;
   height: 10vh;
   position: fixed;
   top: 40vh;
   left: 55vw;
-  color: rgb(193, 36, 36);
+  color: #ffd92f;
   font-family: Impact, Haettenschweiler, 'Arial Narrow Bold', sans-serif;
   font-size: 5vh;
   font-weight: 600;
   display: none;
   animation: circleMove 4s ease-in-out infinite;
   transform-origin: center;
+}
+.hit-pop-up p img {
+  width: 5vw;
+  margin-top: -2vh;
 }
 
 @keyframes circleMove {

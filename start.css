@@ -1,0 +1,88 @@
+body {
+  background-color: black;
+  margin: 0;
+  padding: 0;
+  overflow: hidden;
+  font-family: sans-serif;
+}
+
+.background {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 100vh;
+  overflow: hidden;
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  z-index: 0;
+}
+
+.background video {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  opacity: 0.6;
+}
+
+.option-screen {
+  display: block;
+}
+.create-screen {
+  display: none;
+}
+
+.lobby-container {
+  position: fixed;
+  top: 0;
+  left: 0;
+  z-index: 10;
+  width: 100vw;
+  height: 100vh;
+  margin-top: -5vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.form {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+  width: 300px;
+  /* background-color: rgba(0, 0, 0, 0.6); */
+  padding: 40px;
+  border-radius: 12px;
+  /* box-shadow: 0 0 20px rgba(255, 255, 255, 0.2); */
+}
+
+.form input,
+.form select,
+.form button {
+  padding: 12px;
+  font-size: 16px;
+  border: none;
+  border-radius: 8px;
+  outline: none;
+}
+
+.form input,
+.form select {
+  background-color: white;
+  color: black;
+  font-family: Arial, Helvetica, sans-serif;
+  font-weight: 600;
+}
+
+.form button {
+  background-color: #ffd92f;
+  color: black;
+  font-weight: bold;
+  cursor: pointer;
+  transition: background-color 0.1s ease;
+}
+
+.form button:hover {
+  background-color: #d5b00d;
+}

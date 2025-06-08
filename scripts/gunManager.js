@@ -31,6 +31,11 @@ export class GunManager {
 
       this.spawnBullet(origin, direction, true, data.id);
     });
+
+    this.socket.on('setBlock', ({ x, y, z, id }) => {
+      this.world.setBlockId(x, y, z, id);
+      this.world.generateMeshes();
+    });
   }
 
   setActive(isActive) {
@@ -65,21 +70,26 @@ export class GunManager {
   shoot() {
     if (!this.active || !this.controlPanel?.gun) return;
 
-    const audioClone = gunAudio.cloneNode();
-    audioClone.play();
+    if (this.world.amoCounter > 0) {
+      this.world.decreaseAmmo(1);
 
-    const center = new THREE.Vector2(0, 0);
-    this.raycaster.setFromCamera(center, this.camera);
+      const audioClone = gunAudio.cloneNode();
+      audioClone.play();
 
-    const direction = this.raycaster.ray.direction.clone();
-    const origin = this.raycaster.ray.origin.clone();
+      const center = new THREE.Vector2(0, 0);
+      this.raycaster.setFromCamera(center, this.camera);
 
-    this.socket.emit('shootBullet', {
-      id: this.playerId,
-      origin: origin,
-      direction: direction,
-    });
-    this.spawnBullet(origin, direction, false, this.playerId);
+      const direction = this.raycaster.ray.direction.clone();
+      const origin = this.raycaster.ray.origin.clone();
+
+      this.socket.emit('shootBullet', {
+        id: this.playerId,
+        origin: origin,
+        direction: direction,
+      });
+
+      this.spawnBullet(origin, direction, false, this.playerId);
+    }
   }
 
   checkBlockCollision(bullet) {
@@ -138,8 +148,20 @@ export class GunManager {
       const bullet = list[i];
       bullet.position.add(bullet.userData.velocity.clone().multiplyScalar(delta));
 
-      // Check botsing met block
-      if (bullet.position.length() > 100 || this.checkBlockCollision(bullet)) {
+      // VERANDER BLOCK BIJ HIT
+      const pos = bullet.position.clone();
+      const x = Math.floor(pos.x);
+      const y = Math.floor(pos.y);
+      const z = Math.floor(pos.z);
+      if (bullet.position.length() > 100) {
+        this.scene.remove(bullet);
+        list.splice(i, 1);
+        continue;
+      }
+      if (this.checkBlockCollision(bullet)) {
+        this.world.setBlockId(x, y, z, 4);
+        this.world.generateMeshes();
+        this.socket.emit('setBlock', { x, y, z, id: 4 });
         this.scene.remove(bullet);
         list.splice(i, 1);
         continue;

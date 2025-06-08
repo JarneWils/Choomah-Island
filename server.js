@@ -8,6 +8,9 @@ import { fileURLToPath } from 'url';
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
+let playerCounter = 0;
+let gameIsActive = false;
+
 const app = express();
 const server = http.createServer(app);
 const io = new Server(server, {
@@ -28,6 +31,18 @@ const players = {};
 
 io.on('connection', socket => {
   console.log(`✅ Nieuwe speler verbonden: ${socket.id}`);
+  if (gameIsActive) {
+    socket.emit('cancel-create');
+  }
+  socket.on('game-bezig', () => {
+    console.log(`🕹️ Speler ${socket.id} meldt dat de game bezig is`);
+    socket.emit('cancel-create');
+  });
+  socket.on('playerCreatingGame', () => {
+    console.log(`Speler ${socket.id} is bezig met een game te creëren`);
+    gameIsActive = true;
+    socket.broadcast.emit('someoneCreatingGame');
+  });
 
   // Voeg nieuwe speler toe
   players[socket.id] = {
@@ -36,10 +51,15 @@ io.on('connection', socket => {
     rotation: { x: 0, y: 0, z: 0 },
   };
 
-  // Stuur huidige spelers naar nieuwe speler
+  socket.on('startRequest', () => {
+    playerCounter++;
+    console.log(`📈 StartRequest ontvangen. Spelers verbonden: ${playerCounter}`);
+
+    io.emit('updatePlayerCounter', playerCounter);
+  });
+
   socket.emit('currentPlayers', players);
 
-  // Informeer anderen over nieuwe speler
   socket.broadcast.emit('newPlayer', players[socket.id]);
 
   // Beweeg speler
@@ -60,6 +80,10 @@ io.on('connection', socket => {
     socket.broadcast.emit('bulletFired', data);
   });
 
+  socket.on('setBlock', ({ x, y, z, id }) => {
+    socket.broadcast.emit('setBlock', { x, y, z, id });
+  });
+
   socket.on('playerHit', ({ hitPlayerId, shooterId }) => {
     console.log(`Player ${hitPlayerId} werd geraakt door ${shooterId}`);
     io.to(hitPlayerId).emit('playerHit', { hitPlayerId, shooterId });
@@ -74,10 +98,15 @@ io.on('connection', socket => {
     socket.broadcast.emit('mapChanged', { map });
   });
 
-  // Verwijder speler bij disconnect
   socket.on('disconnect', () => {
     console.log(`❌ Speler weg: ${socket.id}`);
     delete players[socket.id];
+
+    if (playerCounter > 0) {
+      playerCounter--;
+      io.emit('updatePlayerCounter', playerCounter);
+    }
+
     socket.broadcast.emit('playerDisconnected', socket.id);
   });
 });

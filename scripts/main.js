@@ -16,6 +16,7 @@ const mapSelect = document.getElementById('map-select');
 const hitScreen = document.querySelector('.hit');
 const dieScreen = document.querySelector('.die');
 const hpContainer = document.querySelector('.hp-container');
+const playerWait = document.querySelector('.player-wait');
 
 const backgroundAudio = document.querySelector('#background-audio');
 const hitAudios = [
@@ -28,8 +29,12 @@ const dieAudio = document.querySelector('#die-audio');
 
 const removeAudio = document.querySelector('#block-remove-audio');
 
-let lives = 5;
+const params = new URLSearchParams(window.location.search);
 
+let lives = 5;
+let playerCounter = 0;
+let playerCount = parseInt(params.get('players')) || 1;
+let selectedMap = params.get('map') || 'map4';
 let isStart = true;
 
 if (isStart) {
@@ -54,6 +59,8 @@ let gunManager = null;
 // players
 let player = null;
 socket.on('connect', () => {
+  socket.emit('game-bezig');
+
   socket.on('currentPlayers', players => {
     for (const id in players) {
       if (id !== localPlayerId) {
@@ -101,6 +108,29 @@ socket.on('connect', () => {
   });
 
   animate();
+});
+
+socket.on('updatePlayerCounter', counter => {
+  playerCounter = counter;
+  console.log(`🔔 updatePlayerCounter event ontvangen: ${playerCounter}/${playerCount}`);
+
+  if (playerCounter === playerCount) {
+    console.log(`🎮 Alle spelers verbonden (${playerCounter}/${playerCount}), start het spel!`);
+
+    startButton.style.cursor = 'none';
+    isStart = false;
+    startScreen.style.display = 'none';
+    backgroundAudio.play();
+
+    usingFirstPerson = true;
+    controls.enabled = true;
+
+    if (player) {
+      player.enable();
+    }
+
+    currentCamera = playerCamera;
+  }
 });
 
 socket.on('newPlayer', playerData => {
@@ -161,8 +191,11 @@ socket.on('playerHit', ({ hitPlayerId, shooterId }) => {
       backgroundAudio.pause();
       gunManager.setActive(false);
       dieScreen.style.display = 'block';
+      socket.disconnect();
       setTimeout(() => {
         window.location.reload(true);
+        // window.location.href = `index.html`;
+        dieScreen.style.display = 'none';
       }, 1500);
     }
   }
@@ -212,7 +245,7 @@ orbitCamera.position.set(25, 20, 25);
 
 // scene
 const scene = new THREE.Scene();
-let selectedMap = 'map4';
+
 let world = new World(selectedMap, socket);
 world.generate();
 scene.add(world);
@@ -243,12 +276,6 @@ const cycleParams = {
 };
 let clock = new THREE.Clock();
 
-// Fog
-// let isFog = true;
-// if (isFog === true) {
-//   scene.fog = new THREE.Fog(fogColor, 5, 50);
-// }
-
 // controls
 const controls = new OrbitControls(orbitCamera, renderer.domElement);
 controls.target.set(50, 0, 50);
@@ -258,46 +285,24 @@ controls.update();
 let usingFirstPerson = false;
 
 startButton.addEventListener('click', () => {
-  isStart = false;
-  startScreen.style.display = 'none';
-  backgroundAudio.play();
-
-  usingFirstPerson = true;
-  controls.enabled = true; // orbit controls uit
-
-  if (player) {
-    player.enable(); // activeer movement
+  startButton.style.display = 'none';
+  socket.emit('startRequest');
+  if (playerCounter === playerCount) {
+    startButton.style.cursor = 'none';
+    isStart = false;
+    startScreen.style.display = 'none';
+    backgroundAudio.play();
+    usingFirstPerson = true;
+    controls.enabled = true;
+    if (player) {
+      player.enable();
+    }
+    currentCamera = playerCamera;
+  } else if (playerCounter < playerCount) {
+    playerWait.style.display = 'block';
+  } else if (playerCounter > playerCount) {
   }
-
-  currentCamera = playerCamera;
 });
-
-// lights
-// function setupLights() {
-//   const ambient = new THREE.AmbientLight(lightsColor, 0.5);
-//   scene.add(ambient);
-
-//   const fakeSun = new THREE.DirectionalLight(lightsColor, 2);
-//   fakeSun.position.set(0, 60, -(world.size.width * 2));
-//   fakeSun.castShadow = false;
-//   scene.add(fakeSun);
-
-//   const sun = new THREE.DirectionalLight(lightsColor, 2.5);
-//   sun.position.set(world.size.width - 20, 60, world.size.width);
-//   sun.castShadow = true;
-//   sun.shadow.camera.top = 30;
-//   sun.shadow.camera.bottom = -60;
-//   sun.shadow.camera.left = -50;
-//   sun.shadow.camera.right = 50;
-//   sun.shadow.camera.near = 0.1;
-//   sun.shadow.camera.far = 130;
-//   sun.shadow.bias = -0.001;
-//   sun.shadow.mapSize = new THREE.Vector2(512, 512);
-//   scene.add(sun);
-
-//   const shadowHelper = new THREE.CameraHelper(sun.shadow.camera);
-//   // scene.add(shadowHelper);
-// }
 
 // Item selector
 const items = document.querySelectorAll('.item');
