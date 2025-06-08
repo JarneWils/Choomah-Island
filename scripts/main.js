@@ -17,6 +17,7 @@ const hitScreen = document.querySelector('.hit');
 const dieScreen = document.querySelector('.die');
 const hpContainer = document.querySelector('.hp-container');
 const playerWait = document.querySelector('.player-wait');
+const playerFull = document.querySelector('.player-full');
 const amoPopUp = document.querySelector('.amo-pop-up');
 const healPopUp = document.querySelector('.heal-pop-up');
 
@@ -305,6 +306,7 @@ startButton.addEventListener('click', () => {
   } else if (playerCounter < playerCount) {
     playerWait.style.display = 'block';
   } else if (playerCounter > playerCount) {
+    playerFull.style.display = 'block';
   }
 });
 

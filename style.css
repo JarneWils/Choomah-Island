@@ -60,7 +60,8 @@ body {
 .start-button:hover {
   background-color: rgb(193, 36, 36);
 }
-.player-wait {
+.player-wait,
+.player-full {
   display: none;
   color: white;
   border: none;
