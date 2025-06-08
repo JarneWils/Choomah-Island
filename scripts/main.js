@@ -197,9 +197,9 @@ socket.on('playerHit', ({ hitPlayerId, shooterId }) => {
       dieScreen.style.display = 'block';
       socket.disconnect();
       setTimeout(() => {
+        dieScreen.style.display = 'none';
         window.location.reload(true);
         // window.location.href = `index.html`;
-        dieScreen.style.display = 'none';
       }, 1500);
     }
   }
