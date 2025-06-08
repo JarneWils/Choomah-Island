@@ -80,9 +80,9 @@ io.on('connection', socket => {
     socket.broadcast.emit('bulletFired', data);
   });
 
-  socket.on('setBlock', ({ x, y, z, id }) => {
-    socket.broadcast.emit('setBlock', { x, y, z, id });
-  });
+  // socket.on('setBlock', ({ x, y, z, id }) => {
+  //   socket.broadcast.emit('setBlock', { x, y, z, id });
+  // });
 
   socket.on('playerHit', ({ hitPlayerId, shooterId }) => {
     console.log(`Player ${hitPlayerId} werd geraakt door ${shooterId}`);

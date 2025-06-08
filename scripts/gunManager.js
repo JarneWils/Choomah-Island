@@ -31,10 +31,6 @@ export class GunManager {
 
       this.spawnBullet(origin, direction, true, data.id);
     });
-
-    this.socket.on('setBlock', ({ x, y, z, id }) => {
-      this.world.setBlockId(x, y, z, id);
-    });
   }
 
   setActive(isActive) {
@@ -157,14 +153,14 @@ export class GunManager {
         list.splice(i, 1);
         continue;
       }
-      if (this.checkBlockCollision(bullet)) {
-        this.world.setBlockId(x, y, z, 4);
-        this.world.generateMeshes();
-        this.socket.emit('setBlock', { x, y, z, id: 4 });
-        this.scene.remove(bullet);
-        list.splice(i, 1);
-        continue;
-      }
+      // if (this.checkBlockCollision(bullet)) {
+      //   this.world.setBlockId(x, y, z, 4);
+      //   this.world.generateMeshes();
+      //   this.socket.emit('setBlock', { x, y, z, id: 4 });
+      //   this.scene.remove(bullet);
+      //   list.splice(i, 1);
+      //   continue;
+      // }
 
       // Check botsing met speler
       const hitPlayerId = this.checkPlayerCollision(bullet);
