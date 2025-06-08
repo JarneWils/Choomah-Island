@@ -18,6 +18,7 @@ const dieScreen = document.querySelector('.die');
 const hpContainer = document.querySelector('.hp-container');
 const playerWait = document.querySelector('.player-wait');
 const amoPopUp = document.querySelector('.amo-pop-up');
+const healPopUp = document.querySelector('.heal-pop-up');
 
 const backgroundAudio = document.querySelector('#background-audio');
 const hitAudios = [
@@ -177,6 +178,7 @@ socket.on('playerHit', ({ hitPlayerId, shooterId }) => {
       if (hartjes.length > 0) {
         const lastHartje = hartjes[hartjes.length - 1];
         hpContainer.removeChild(lastHartje);
+        parseInt(hpContainer.style.marginLeft || '0') + 20 + 'px';
       }
     }
 
@@ -338,6 +340,7 @@ function onMouseDown(event) {
       const z = Math.floor(player.selectedCoords.z);
       if (y > 1) {
         const block = world.getBlock(x, y, z);
+
         if (block && block.id === 4) {
           world.increaseAmmo(1);
           amoPopUp.style.display = 'block';
@@ -345,15 +348,38 @@ function onMouseDown(event) {
           audioClone.play();
           setTimeout(() => {
             amoPopUp.style.display = 'none';
-          }, 200);
+          }, 500);
         }
-        world.removeBlock(x, y, z); // pas NA het checken verwijderen
+
+        if (block && block.id === 3) {
+          if (lives < 10) {
+            healPopUp.style.display = 'block';
+            const audioClone = scoreAudio.cloneNode();
+            audioClone.play();
+            lives++;
+            const div = document.createElement('div');
+            div.classList.add('hartje');
+            const img = document.createElement('img');
+            img.src = 'images/hartje.png';
+            div.appendChild(img);
+            hpContainer.appendChild(div);
+            hpContainer.style.marginLeft =
+              parseInt(hpContainer.style.marginLeft || '0') - 20 + 'px';
+            setTimeout(() => {
+              healPopUp.style.display = 'none';
+            }, 500);
+          }
+        }
+
+        world.removeBlock(x, y, z); // verwijder het blok NA het checken
+
         const removeAudioClone = removeAudio.cloneNode();
         removeAudioClone.play();
       }
     }
   }
 }
+
 document.addEventListener('mousedown', onMouseDown);
 
 //Loop

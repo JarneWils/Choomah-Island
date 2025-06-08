@@ -219,7 +219,22 @@ body {
   animation: circleMove 4s ease-in-out infinite;
   transform-origin: center;
 }
-.hit-pop-up p img {
+.heal-pop-up {
+  width: 20vw;
+  height: 10vh;
+  position: fixed;
+  top: 40vh;
+  left: 55vw;
+  color: #15b5ff;
+  font-family: Impact, Haettenschweiler, 'Arial Narrow Bold', sans-serif;
+  font-size: 5vh;
+  font-weight: 600;
+  display: none;
+  animation: circleMove 4s ease-in-out infinite;
+  transform-origin: center;
+}
+.hit-pop-up p img,
+.heal-pop-up p img {
   width: 5vw;
   margin-top: -2vh;
 }
