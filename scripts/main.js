@@ -37,8 +37,9 @@ const params = new URLSearchParams(window.location.search);
 
 let lives = 5;
 let playerCounter = 0;
+// let manuallyUnlocked = false;
 let playerCount = parseInt(params.get('players')) || 1;
-let selectedMap = params.get('map') || 'map4';
+let selectedMap = params.get('map') || 'map2';
 let isStart = true;
 
 if (isStart) {
@@ -179,7 +180,7 @@ socket.on('playerHit', ({ hitPlayerId, shooterId }) => {
       if (hartjes.length > 0) {
         const lastHartje = hartjes[hartjes.length - 1];
         hpContainer.removeChild(lastHartje);
-        parseInt(hpContainer.style.marginLeft || '0') + 20 + 'px';
+        // parseInt(hpContainer.style.marginLeft || '0') + 20 + 'px';
       }
     }
 
@@ -289,26 +290,43 @@ controls.update();
 
 let usingFirstPerson = false;
 
+hpContainer.style.display = 'none';
 startButton.addEventListener('click', () => {
   startButton.style.display = 'none';
+  hpContainer.style.display = 'flex';
   socket.emit('startRequest');
-  if (playerCounter === playerCount) {
-    startButton.style.cursor = 'none';
-    isStart = false;
-    startScreen.style.display = 'none';
-    backgroundAudio.play();
-    usingFirstPerson = true;
-    controls.enabled = true;
-    if (player) {
-      player.enable();
-    }
-    currentCamera = playerCamera;
-  } else if (playerCounter < playerCount) {
-    playerWait.style.display = 'block';
-  } else if (playerCounter > playerCount) {
-    playerFull.style.display = 'block';
-  }
+  // if (playerCounter === playerCount) {
+  //   startButton.style.cursor = 'none';
+  //   isStart = false;
+  //   startScreen.style.display = 'none';
+  //   backgroundAudio.play();
+  //   usingFirstPerson = true;
+  //   controls.enabled = true;
+  //   if (player) {
+  //     player.enable();
+  //   }
+  //   currentCamera = playerCamera;
+  // } else if (playerCounter < playerCount) {
+  //   playerWait.style.display = 'block';
+  // } else if (playerCounter > playerCount) {
+  //   playerFull.style.display = 'block';
+  // }
 });
+// document.addEventListener('pointerlockchange', () => {
+//   const isLocked = document.pointerLockElement === renderer.domElement;
+//   if (!isLocked && !manuallyUnlocked) {
+//     // Probeer terug te locken tenzij het bewust werd gedaan (via ESC)
+//     player.controls.lock();
+//   }
+// });
+
+// // Detecteer wanneer ESC gebruikt wordt
+// document.addEventListener('keydown', e => {
+//   if (e.key === 'Escape') {
+//     manuallyUnlocked = true;
+//     player.disable(); // optioneel
+//   }
+// });
 
 // Item selector
 const items = document.querySelectorAll('.item');
@@ -366,10 +384,10 @@ function onMouseDown(event) {
             div.appendChild(img);
             hpContainer.appendChild(div);
             hpContainer.style.marginLeft =
-              parseInt(hpContainer.style.marginLeft || '0') - 20 + 'px';
-            setTimeout(() => {
-              healPopUp.style.display = 'none';
-            }, 500);
+              // parseInt(hpContainer.style.marginLeft || '0') - 20 + 'px';
+              setTimeout(() => {
+                healPopUp.style.display = 'none';
+              }, 500);
           }
         }
 

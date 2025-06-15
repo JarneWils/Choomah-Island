@@ -7,7 +7,7 @@ const geometry = new THREE.BoxGeometry(1, 1, 1);
 const amoCount = document.querySelector('.amo-count');
 
 export class World extends THREE.Group {
-  amoCounter = 10;
+  amoCounter = 40;
 
   /**
    * @type {{

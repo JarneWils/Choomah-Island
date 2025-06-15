@@ -2,56 +2,73 @@
 <html lang="en">
   <head>
     <meta charset="UTF-8" />
-    <link rel="icon" href="/vite.svg" />
+    <link rel="icon" type="image/svg+xml" href="/vite.svg" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <link rel="stylesheet" href="start.css" />
-    <title>Start</title>
+    <link rel="stylesheet" href="/style.css" />
+
+    <title>Redshifter</title>
   </head>
   <body>
-    <div class="creation-bezig">Someone is creating a game ...</div>
-    <div class="game-bezig">Allready playing</div>
+    <audio id="background-audio" src="public/audio/wake-up.mp3" loop></audio>
+    <audio id="walk-audio" src="public/audio/walk.mp3" loop></audio>
+    <audio id="gun-audio" src="public/audio/gun.wav"></audio>
+    <audio id="hit1-audio" src="public/audio/hit1.wav"></audio>
+    <audio id="hit2-audio" src="public/audio/hit2.wav"></audio>
+    <audio id="hit3-audio" src="public/audio/hit3.wav"></audio>
+    <audio id="hit4-audio" src="public/audio/hit4.wav"></audio>
+    <audio id="die-audio" src="public/audio/die.wav"></audio>
+    <audio id="score-audio" src="public/audio/plus-10.mp3"></audio>
+    <audio id="block-remove-audio" src="public/audio/block-remove.wav"></audio>
 
-    <div class="option-screen">
-      <div class="lobby-container">
-        <div class="form">
-          <button id="join-button">JOIN GAME</button>
-          <button id="create-button">CREATE GAME</button>
-        </div>
+    <div class="start-container">
+      <div class="logo"><img src="public/images/logo.png" /></div>
+      <div class="player-wait">WAITING FOR PLAYERS ...</div>
+      <div class="player-full">MAP IS FULL</div>
+      <button class="start-button">START</button>
+      <select id="map-select" class="map-select">
+        <option value="map1">MAP 01</option>
+        <option value="map2">MAP 02</option>
+        <option value="map3">MAP 03</option>
+        <option value="map4">MAP 04</option>
+      </select>
+    </div>
+
+    <div class="hit"></div>
+    <div class="die"></div>
+
+    <div class="hit-pop-up">
+      <p>- <img src="public/images/hartje.png" /></p>
+    </div>
+
+    <div class="amo-pop-up">
+      <p>+ 1</p>
+    </div>
+
+    <div class="heal-pop-up">
+      <p>+ <img src="public/images/hartje.png" /></p>
+    </div>
+
+    <div class="hp-container"></div>
+
+    <div>
+      <div class="aimPoint"></div>
+      <div class="aimPoint2"></div>
+    </div>
+
+    <div class="gun-holder"><img src="public/images/holding-gun-yellow.png" /></div>
+
+    <div class="materials">
+      <div class="item">
+        <p class="key">1</p>
+        <div class="gun"><img src="public/images/gun-icon.png.png" /></div>
+        <p class="amo-count">40 x</p>
+      </div>
+
+      <div class="item">
+        <p class="key">2</p>
+        <div class="block"><img src="public/images/block-icon.png" /></div>
       </div>
     </div>
-
-    <div class="create-screen">
-      <div class="lobby-container">
-        <div class="form">
-          <select id="player-count-select">
-            <option value="1">1 Player</option>
-            <option value="2" selected>2 Players</option>
-            <option value="3">3 Players</option>
-            <option value="4">4 Players</option>
-            <option value="5">5 Players</option>
-            <option value="6">6 Players</option>
-            <option value="7">7 Players</option>
-            <option value="8">8 Players</option>
-          </select>
-          <select id="map-select">
-            <option value="map1">MAP 01</option>
-            <option value="map2">MAP 02</option>
-            <option value="map3" selected>MAP 03</option>
-            <option value="map4">MAP 04</option>
-          </select>
-          <button id="start-button">CREATE</button>
-
-          <button id="back-button">BACK</button>
-        </div>
-      </div>
-    </div>
-
-    <div class="background">
-      <video autoplay muted loop playsinline>
-        <source src="public/images/choomah-Island-2.0.mp4" type="video/mp4" />
-      </video>
-    </div>
-
-    <script type="module" src="scripts/loby.js"></script>
+    <script type="module" src="/scripts/main.js"></script>
   </body>
 </html>
